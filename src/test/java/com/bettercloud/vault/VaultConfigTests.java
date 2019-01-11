@@ -88,9 +88,10 @@ public class VaultConfigTests {
      */
     @Test
     public void testConfigConstructor() throws VaultException {
-        final VaultConfig config = new VaultConfig().address("address").token("token").build();
+        final VaultConfig config = new VaultConfig().address("address").token("token").namespace("namespace").build();
         assertEquals("address", config.getAddress());
         assertEquals("token", config.getToken());
+        assertEquals("namespace", config.getNamespace());
     }
 
     /**
@@ -116,9 +117,28 @@ public class VaultConfigTests {
                 new VaultConfig()
                         .address("address")
                         .token("token")
+                        .namespace("namespace")
                         .build();
         assertEquals("address", config.getAddress());
         assertEquals("token", config.getToken());
+        assertEquals("namespace", config.getNamespace());
+    }
+
+    /**
+     * Test creating a <code>VaultConfig</code> instance via its builder pattern, with no namespace
+     *
+     * @throws VaultException
+     */
+    @Test
+    public void testConfigBuilderWithNoNamespace() throws VaultException {
+        final VaultConfig config =
+                new VaultConfig()
+                        .address("address")
+                        .token("token")
+                        .build();
+        assertEquals("address", config.getAddress());
+        assertEquals("token", config.getToken());
+        assertEquals("", config.getNamespace());
     }
 
     /**
@@ -132,6 +152,7 @@ public class VaultConfigTests {
         final MockEnvironmentLoader mock = new MockEnvironmentLoader();
         mock.override("VAULT_ADDR", "http://127.0.0.1:8200");
         mock.override("VAULT_TOKEN", "c24e2469-298a-6c64-6a71-5b47c9ba459a");
+        mock.override("VAULT_NAMESPACE", "my-namespace");
         mock.override("VAULT_PROXY_ADDRESS", "localhost");
         mock.override("VAULT_PROXY_PORT", "80");
         mock.override("VAULT_PROXY_USERNAME", "scott");
@@ -145,6 +166,7 @@ public class VaultConfigTests {
                 .build();
         assertEquals("http://127.0.0.1:8200", config.getAddress());
         assertEquals("c24e2469-298a-6c64-6a71-5b47c9ba459a", config.getToken());
+        assertEquals("my-namespace", config.getNamespace());
         assertTrue(config.getSslConfig().isVerify());
         assertTrue(30 == config.getOpenTimeout());
         assertTrue(30 == config.getReadTimeout());
@@ -210,6 +232,7 @@ public class VaultConfigTests {
         final MockEnvironmentLoader mock = new MockEnvironmentLoader(mockHomeDirectory);
         mock.override("VAULT_ADDR", "http://127.0.0.1:8200");
         mock.override("VAULT_PROXY_ADDRESS", "localhost");
+        mock.override("VAULT_NAMESPACE", "my-namespace");
         mock.override("VAULT_PROXY_PORT", "80");
         mock.override("VAULT_PROXY_USERNAME", "scott");
         mock.override("VAULT_PROXY_PASSWORD", "tiger");
@@ -222,6 +245,7 @@ public class VaultConfigTests {
                 .build();
         assertEquals("http://127.0.0.1:8200", config.getAddress());
         assertEquals("d24e2469-298a-6c64-6a71-5b47c9ba459a", config.getToken());
+        assertEquals("my-namespace", config.getNamespace());
         assertTrue(config.getSslConfig().isVerify());
         assertTrue(30 == config.getOpenTimeout());
         assertTrue(30 == config.getReadTimeout());

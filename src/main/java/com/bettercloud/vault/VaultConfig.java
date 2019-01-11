@@ -29,9 +29,11 @@ public class VaultConfig implements Serializable {
     private static final String VAULT_ADDR = "VAULT_ADDR";
     private static final String VAULT_OPEN_TIMEOUT = "VAULT_OPEN_TIMEOUT";
     private static final String VAULT_READ_TIMEOUT = "VAULT_READ_TIMEOUT";
+    private static final String VAULT_NAMESPACE = "VAULT_NAMESPACE";
 
     @Getter private String address;
     @Getter private String token;
+    @Getter private String namespace;
     @Getter private SslConfig sslConfig;
     @Getter private Integer openTimeout;
     @Getter private Integer readTimeout;
@@ -74,6 +76,20 @@ public class VaultConfig implements Serializable {
      */
     public VaultConfig address(final String address) {
         this.address = address;
+        return this;
+    }
+
+    /**
+     * <p>Sets the vault namespace to use w/ Vault enterprise
+     *
+     * <p>If no namespace is explicitly set, the root namespace will be used.</p>
+     *
+     *
+     * @param namespace The Vault namespace to use
+     * @return This object, with address populated, ready for additional builder-pattern method calls or else finalization with the build() method
+     */
+    public VaultConfig namespace(final String namespace) {
+        this.namespace = namespace;
         return this;
     }
 
@@ -191,6 +207,12 @@ public class VaultConfig implements Serializable {
         }
         if (this.token == null && environmentLoader.loadVariable(VAULT_TOKEN) != null) {
             this.token = environmentLoader.loadVariable(VAULT_TOKEN);
+        }
+        if (this.namespace == null && environmentLoader.loadVariable(VAULT_NAMESPACE) != null) {
+            this.namespace = environmentLoader.loadVariable(VAULT_NAMESPACE);
+        }
+        if (this.namespace == null) {
+            this.namespace = "";
         }
         if (this.openTimeout == null && environmentLoader.loadVariable(VAULT_OPEN_TIMEOUT) != null) {
             try {

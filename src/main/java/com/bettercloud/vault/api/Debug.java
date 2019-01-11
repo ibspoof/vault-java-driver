@@ -88,6 +88,7 @@ public class Debug {
                 if (config.getToken() != null) {
                     rest.header("X-Vault-Token", config.getToken());
                 }
+                rest.header("X-Vault-Namespace", config.getNamespace());
                 // Add params if present
                 if (standbyOk != null) rest.parameter("standbyok", standbyOk.toString());
                 if (activeCode != null) rest.parameter("activecode", activeCode.toString());
